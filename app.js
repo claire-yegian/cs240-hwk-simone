@@ -74,3 +74,7 @@ function playGame() {
         }
     }, 400);
 }
+
+//change border to white when hovering over
+//change color when mousedown (and over button)
+//play sound and revert color when mouseup
