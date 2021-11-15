@@ -20,14 +20,14 @@ let gameSeq = [ 'R', 'G', 'Y', 'Y' ]
 //     })
 
 /* Get the inputed number of rounds */
-//let rounds = document.querySelector('input[id="rounds"]')
+//let roundsToPlay = document.querySelector('input[id="rounds"]')
 let playButton = document.querySelector('button[id="play"]')
-// playButton.addEventListener('unclick', getSequence(rounds.innerHTML))
+// playButton.addEventListener('unclick', getSequence(roundsToPlay.innerHTML))
 
 // /* Function to get the game sequence with the inputed number of rounds*/
-// async function getSequence(rounds) {
+// async function getSequence(numRounds) {
 //     try {
-//         let response = await axios.get(`http://cs.pugetsound.edu/~dchiu/cs240/api/simone/?cmd=getSolution&rounds=${rounds}`)
+//         let response = await axios.get(`http://cs.pugetsound.edu/~dchiu/cs240/api/simone/?cmd=getSolution&rounds=${numRounds}`)
 //         console.log(response.data.key)
 //     }
 //     catch (err) {
@@ -65,10 +65,10 @@ function playStartSeq(i) {
     }, 120*i)
 }
 /* Play game sequence for appropriate round */
-let rounds = 0;
+let round = 0; // The round we're on
 function playGame() {
     setTimeout(() => {
-        for (let i = 0; i < gameSeq.length && i <= rounds; i ++) {
+        for (let i = 0; i < gameSeq.length && i <= round; i ++) {
             playSound(gameSeq[i])
         }
     }, 400);
@@ -103,3 +103,19 @@ for (let i = 0; i < colorButtons.length; i ++) {
     })
 }
 
+/* USER INTERACTION */
+//next button to be pressed
+let nextCorrectList = [];
+let tempGameSeq = gameSeq;
+for (j = 0; j < 4; j ++) {  //FIX FOR INPUTED ROUNDS
+    for (i = tempGameSeq.length - 1; i >= 0; i --) {
+        nextCorrectList.unshift(tempGameSeq[i])
+    }
+    tempGameSeq.pop()
+}
+
+//if correct button pressed
+//  if the user won
+//  if we've reached the end of the round
+//  else
+//else(wrong button)
