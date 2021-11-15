@@ -75,19 +75,29 @@ function playGame() {
     }, 400);
 }
 
-//change border to white when hovering over
-let redButton = document.querySelector('div[class="red"]')
-redButton.addEventListener('mouseover', () => {(redButton.classList.add('hover'))})
-redButton.addEventListener('mouseout', () => {(redButton.classList.remove('hover'))})
-
+/* Handle button presses and hovering */
 let colorButtons = document.querySelectorAll('div')
+/* Change button border to white when hovering over */
 for (let i = 0; i < colorButtons.length; i ++) {
     colorButtons[i].addEventListener('mouseover', () => {(colorButtons[i].classList.add('hover'))})
     colorButtons[i].addEventListener('mouseout', () => {(colorButtons[i].classList.remove('hover'))})
 }
-//console.log(colorButtons)
-redButton.addEventListener('mouseover', () => {(redButton.classList.add('hover'))})
-redButton.addEventListener('mouseout', () => {(redButton.classList.remove('hover'))})
+/* Change button color when mousedown */
+for (let i = 0; i < colorButtons.length; i ++) {
+    colorButtons[i].addEventListener('mousedown', () => {
+        (colorButtons[i].classList.replace(colorButtons[i].classList[0],'light'+colorButtons[i].classList[0]))})
+    document.addEventListener('mouseup', () => {
+        for (let i = 0; i < colorButtons.length; i ++) {
+        if (colorButtons[i].classList[0].substring(0,5) == 'light') {
+            colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
+            console.log(''+colorButtons[i].classList[0]+' mouseup added') 
+        }}})
+    document.addEventListener('mouseenter', () => {
+        for (let i = 0; i < colorButtons.length; i ++) {
+        if (colorButtons[i].classList[0].substring(0,5) == 'light') {
+            colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
+            console.log(''+colorButtons[i].classList[0]+' mouseleave added')  
+        }}})
+}
 
-//change color when mousedown (and over button)
 //play sound and revert color when mouseup
