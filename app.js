@@ -87,17 +87,25 @@ for (let i = 0; i < colorButtons.length; i ++) {
     colorButtons[i].addEventListener('mousedown', () => {
         (colorButtons[i].classList.replace(colorButtons[i].classList[0],'light'+colorButtons[i].classList[0]))})
     document.addEventListener('mouseup', () => {
-        for (let i = 0; i < colorButtons.length; i ++) {
-        if (colorButtons[i].classList[0].substring(0,5) == 'light') {
+        //for (let i = 0; i < colorButtons.length; i ++) {
+        //console.log('mouseup')
+            if (colorButtons[i].classList[0].substring(0,5) == 'light') {
             colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
-            console.log(''+colorButtons[i].classList[0]+' mouseup added') 
-        }}})
+            //console.log(''+colorButtons[i].classList[0]+' mouseup added') 
+        }})
     document.addEventListener('mouseout', () => {
-        for (let i = 0; i < colorButtons.length; i ++) {
+        //for (let i = 0; i < colorButtons.length; i ++) {
         if (colorButtons[i].classList[0].substring(0,5) == 'light') {
             colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
-            console.log(''+colorButtons[i].classList[0]+' mouseleave added')  
-        }}})
+            //console.log(''+colorButtons[i].classList[0]+' mouseleave added')  
+        }})
 }
 
-//play sound and revert color when mouseup
+/* Play sound when mouseup */
+for (let i = 0; i < colorButtons.length; i ++) {
+    colorButtons[i].addEventListener('mouseup', () => {
+        if(colorButtons[i].classList[0].substring(0,5)=='light') {
+            playSound(colorButtons[i].classList[0].charAt(5).toUpperCase())
+        }
+    })
+}

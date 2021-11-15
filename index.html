@@ -5,7 +5,17 @@
     <link rel="stylesheet" href="simone.css" />
   </head>
 
-  <body>
+  <body ondragstart="return false" draggable="false"
+    ondragenter="event.dataTransfer.dropEffect='none'; 
+      event.stopPropagation(); 
+      event.preventDefault();"  
+    ondragover="event.dataTransfer.dropEffect='none';
+      event.stopPropagation(); 
+      event.preventDefault();"  
+    ondrop="event.dataTransfer.dropEffect='none';
+      event.stopPropagation(); 
+      event.preventDefault();"
+  >
     <section>
       <h1>Simone the Memory Game</h1>
       <p>
