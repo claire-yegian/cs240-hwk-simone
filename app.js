@@ -35,20 +35,6 @@ let playButton = document.querySelector('button[id="play"]')
 //     }
 // }
 
-/* When the start button is pressed ... */
-playButton.addEventListener('click', function (click) 
-    {for (let i = 0; i < startSeq.length; i ++) {
-        playStartSeq(i)
-    }
-    setTimeout(playGame, 4000+120*(startSeq.length))
-})
-/* ... play the start sequence */
-function playStartSeq(i) {
-    setTimeout(() => {
-        playSound(startSeq[i])
-    }, 120*i)
-}
-
 /* Which color's sound to play? */
 function playSound(color) {
     if (color == 'R') {
@@ -65,6 +51,19 @@ function playSound(color) {
     }
 }
 
+/* WHEN THE START BUTTON IS PRESSED ... */
+playButton.addEventListener('click', function (click) 
+    {for (let i = 0; i < startSeq.length; i ++) {
+        playStartSeq(i)
+    }
+    setTimeout(playGame, 4000+120*(startSeq.length))
+})
+/* ... play the start sequence */
+function playStartSeq(i) {
+    setTimeout(() => {
+        playSound(startSeq[i])
+    }, 120*i)
+}
 /* Play game sequence for appropriate round */
 let rounds = 0;
 function playGame() {
@@ -75,7 +74,7 @@ function playGame() {
     }, 400);
 }
 
-/* Handle button presses and hovering */
+/* HANDLE BUTTON PRESSES AND HOVERING */
 let colorButtons = document.querySelectorAll('div')
 /* Change button border to white when hovering over */
 for (let i = 0; i < colorButtons.length; i ++) {
@@ -87,20 +86,14 @@ for (let i = 0; i < colorButtons.length; i ++) {
     colorButtons[i].addEventListener('mousedown', () => {
         (colorButtons[i].classList.replace(colorButtons[i].classList[0],'light'+colorButtons[i].classList[0]))})
     document.addEventListener('mouseup', () => {
-        //for (let i = 0; i < colorButtons.length; i ++) {
-        //console.log('mouseup')
-            if (colorButtons[i].classList[0].substring(0,5) == 'light') {
-            colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
-            //console.log(''+colorButtons[i].classList[0]+' mouseup added') 
-        }})
-    document.addEventListener('mouseout', () => {
-        //for (let i = 0; i < colorButtons.length; i ++) {
         if (colorButtons[i].classList[0].substring(0,5) == 'light') {
             colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
-            //console.log(''+colorButtons[i].classList[0]+' mouseleave added')  
+        }})
+    document.addEventListener('mouseout', () => {
+        if (colorButtons[i].classList[0].substring(0,5) == 'light') {
+            colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
         }})
 }
-
 /* Play sound when mouseup */
 for (let i = 0; i < colorButtons.length; i ++) {
     colorButtons[i].addEventListener('mouseup', () => {
@@ -109,3 +102,4 @@ for (let i = 0; i < colorButtons.length; i ++) {
         }
     })
 }
+
