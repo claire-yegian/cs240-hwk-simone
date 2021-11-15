@@ -92,7 +92,7 @@ for (let i = 0; i < colorButtons.length; i ++) {
             colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
             console.log(''+colorButtons[i].classList[0]+' mouseup added') 
         }}})
-    document.addEventListener('mouseenter', () => {
+    document.addEventListener('mouseout', () => {
         for (let i = 0; i < colorButtons.length; i ++) {
         if (colorButtons[i].classList[0].substring(0,5) == 'light') {
             colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
