@@ -76,5 +76,18 @@ function playGame() {
 }
 
 //change border to white when hovering over
+let redButton = document.querySelector('div[class="red"]')
+redButton.addEventListener('mouseover', () => {(redButton.classList.add('hover'))})
+redButton.addEventListener('mouseout', () => {(redButton.classList.remove('hover'))})
+
+let colorButtons = document.querySelectorAll('div')
+for (let i = 0; i < colorButtons.length; i ++) {
+    colorButtons[i].addEventListener('mouseover', () => {(colorButtons[i].classList.add('hover'))})
+    colorButtons[i].addEventListener('mouseout', () => {(colorButtons[i].classList.remove('hover'))})
+}
+//console.log(colorButtons)
+redButton.addEventListener('mouseover', () => {(redButton.classList.add('hover'))})
+redButton.addEventListener('mouseout', () => {(redButton.classList.remove('hover'))})
+
 //change color when mousedown (and over button)
 //play sound and revert color when mouseup
