@@ -40,20 +40,37 @@ playButton.addEventListener('click', function (click)
     {for (let i = 0; i < startSeq.length; i ++) {
         playStartSeq(i)
     }
+    setTimeout(playGame, 4000+120*(startSeq.length))
 })
 /* ... play the start sequence */
 function playStartSeq(i) {
     setTimeout(() => {
-        if (startSeq[i] == 'R') {
-            new Audio('/sounds/red.wav').play()
+        playSound(startSeq[i])
+    }, 120*i)
+}
+
+/* Which color's sound to play? */
+function playSound(color) {
+    if (color == 'R') {
+        new Audio('/sounds/red.wav').play()
+    }
+    else if (color == 'Y') {
+        new Audio('/sounds/yellow.wav').play()
+    }
+    else if (color == 'G') {
+        new Audio('/sounds/green.wav').play()
+    }
+    else if (color == 'B') {
+        new Audio('/sounds/blue.wav').play()
+    }
+}
+
+/* Play game sequence for appropriate round */
+let rounds = 0;
+function playGame() {
+    setTimeout(() => {
+        for (let i = 0; i < gameSeq.length && i <= rounds; i ++) {
+            playSound(gameSeq[i])
         }
-        else if (startSeq[i] == 'Y') {
-            new Audio('/sounds/yellow.wav').play()
-        }
-        else if (startSeq[i] == 'G') {
-            new Audio('/sounds/green.wav').play()
-        }
-        else if (startSeq[i] == 'B') {
-            new Audio('/sounds/blue.wav').play()
-    }}, 120*i)
+    }, 400);
 }
