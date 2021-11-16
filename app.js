@@ -52,24 +52,29 @@ function playSound(color) {
 }
 
 /* WHEN THE START BUTTON IS PRESSED ... */
-playButton.addEventListener('click', function (click) 
-    {for (let i = 0; i < startSeq.length; i ++) {
+let gameStarted = false
+playButton.addEventListener('click', function (click) {
+    gameStarted = true
+    for (let i = 0; i < startSeq.length; i ++) {
         playStartSeq(i)
     }
     setTimeout(playGame, 4000+120*(startSeq.length))
+
 })
 /* ... play the start sequence */
 function playStartSeq(i) {
     setTimeout(() => {
-        playSound(startSeq[i])
+        playSound(startSeq[i]);
+        //change color
     }, 120*i)
 }
 /* Play game sequence for appropriate round */
-let round = 0; // The round we're on
+let round = 1; // The round we're on
 function playGame() {
     setTimeout(() => {
         for (let i = 0; i < gameSeq.length && i <= round; i ++) {
             playSound(gameSeq[i])
+            //change color
         }
     }, 400);
 }
@@ -98,7 +103,11 @@ for (let i = 0; i < colorButtons.length; i ++) {
 for (let i = 0; i < colorButtons.length; i ++) {
     colorButtons[i].addEventListener('mouseup', () => {
         if(colorButtons[i].classList[0].substring(0,5)=='light') {
-            playSound(colorButtons[i].classList[0].charAt(5).toUpperCase())
+            let colorChar = colorButtons[i].classList[0].charAt(5).toUpperCase()
+            playSound(colorChar)
+            if (gameStarted) {
+                play(colorChar)
+            }
         }
     })
 }
@@ -106,16 +115,40 @@ for (let i = 0; i < colorButtons.length; i ++) {
 /* USER INTERACTION */
 //next button to be pressed
 let nextCorrectList = [];
-let tempGameSeq = gameSeq;
-for (j = 0; j < 4; j ++) {  //FIX FOR INPUTED ROUNDS
+let tempGameSeq = [...gameSeq]
+for (j = 0; j < 4; j ++) {
+    nextCorrectList.unshift('end round')
     for (i = tempGameSeq.length - 1; i >= 0; i --) {
         nextCorrectList.unshift(tempGameSeq[i])
     }
     tempGameSeq.pop()
 }
+console.log(nextCorrectList)
+console.log(gameSeq.length)
 
-//if correct button pressed
-//  if the user won
-//  if we've reached the end of the round
-//  else
+function play(char) {
+    if (char == nextCorrectList[0]) {//if correct button pressed
+        if (nextCorrectList.length == 1) {//  if the user won
+            win()
+        }
+        else if (nextCorrectList[1] == 'end round') { //  if we've reached the end of the round
+            round += 1
+            nextCorrectList.shift()
+            nextCorrectList.shift()
+        }
+        else {//  else
+            nextCorrectList.shift()
+        }
+    }
+    else {
+        lose()
+    }
+}
 //else(wrong button)
+
+function win() {
+    console.log('you win!')
+}
+function lose() {
+    console.log('you lose')
+}
