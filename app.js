@@ -51,6 +51,26 @@ function playSound(color) {
     }
 }
 
+/* Convert to color */
+function toColor(char) {
+    if (char == 'R') {
+        //console.log(document.querySelector('div[class="red"]'))
+        return document.querySelector('div[class="red"]')
+    }
+    else if (char == 'Y') {
+        //console.log(document.querySelector('div[class="yellow"]'))
+        return document.querySelector('div[class="yellow"]')
+    }
+    else if (char == 'G') {
+        //console.log(document.querySelector('div[class="green"]'))
+        return document.querySelector('div[class="green"]')
+    }
+    else {
+        //console.log(document.querySelector('div[class="blue"]'))
+        return document.querySelector('div[class="blue"]')
+    }
+}
+
 /* WHEN THE START BUTTON IS PRESSED ... */
 let gameStarted = false
 playButton.addEventListener('click', function (click) {
@@ -63,20 +83,35 @@ playButton.addEventListener('click', function (click) {
 })
 /* ... play the start sequence */
 function playStartSeq(i) {
+    let colorButton = toColor(startSeq[i])
     setTimeout(() => {
+        colorButton.classList.replace(colorButton.classList[0],'light'+colorButton.classList[0])
+        setTimeout(() => {
+            colorButton.classList.replace(colorButton.classList[0],colorButton.classList[0].substring(5))
+        }, 119);
         playSound(startSeq[i]);
-        //change color
     }, 120*i)
 }
 /* Play game sequence for appropriate round */
 let round = 1; // The round we're on
 function playGame() {
-    setTimeout(() => {
-        for (let i = 0; i < gameSeq.length && i <= round; i ++) {
-            playSound(gameSeq[i])
-            //change color
-        }
-    }, 400);
+    //setTimeout(() => {
+    for (let i = 1; i < gameSeq.length && i <= round; i ++) {
+        let colorButton2 = toColor(gameSeq[i-1])
+        console.log(colorButton2)
+        setTimeout(() => {
+            //if (colorButton2.classList[0].substring(0,5) != 'light') {
+                colorButton2.classList.replace(colorButton2.classList[0],'light'+colorButton2.classList[0])
+            //}
+            setTimeout(() => {
+                console.log(colorButton2.classList[0])
+                //if (colorButton2.classList.length != 0) {
+                    colorButton2.classList.replace(colorButton2.classList[0],colorButton2.classList[0].substring(5))
+                //}
+            }, 399);
+            playSound(gameSeq[i-1])
+        }, 400*(i-1));
+    }
 }
 
 /* HANDLE BUTTON PRESSES AND HOVERING */
