@@ -50,24 +50,35 @@ function playSound(color) {
         new Audio('/sounds/blue.wav').play()
     }
 }
-
-/* Convert to color */
+/* Convert color's character to query selected button */
 function toColor(char) {
     if (char == 'R') {
-        //console.log(document.querySelector('div[class="red"]'))
-        return document.querySelector('div[class="red"]')
+        let toReturn = document.querySelector('div[class="red"]')
+        if (toReturn == null) {
+            toReturn = document.querySelector('div[class="lightred"]')
+        }
+        return toReturn
     }
     else if (char == 'Y') {
-        //console.log(document.querySelector('div[class="yellow"]'))
-        return document.querySelector('div[class="yellow"]')
+        let toReturn = document.querySelector('div[class="yellow"]')
+        if (toReturn == null) {
+            toReturn = document.querySelector('div[class="lightyellow"]')
+        }
+        return toReturn
     }
     else if (char == 'G') {
-        //console.log(document.querySelector('div[class="green"]'))
-        return document.querySelector('div[class="green"]')
+        let toReturn = document.querySelector('div[class="green"]')
+        if (toReturn == null) {
+            toReturn = document.querySelector('div[class="lightgreen"]')
+        }
+        return toReturn
     }
     else {
-        //console.log(document.querySelector('div[class="blue"]'))
-        return document.querySelector('div[class="blue"]')
+        let toReturn = document.querySelector('div[class="blue"]')
+        if (toReturn == null) {
+            toReturn = document.querySelector('div[class="lightblue"]')
+        }
+        return toReturn
     }
 }
 
@@ -75,10 +86,13 @@ function toColor(char) {
 let gameStarted = false
 playButton.addEventListener('click', function (click) {
     gameStarted = true
+    round = 1
+    message.innerHTML = ''
+    nextButtons()
     for (let i = 0; i < startSeq.length; i ++) {
         playStartSeq(i)
     }
-    setTimeout(playGame, 4000+120*(startSeq.length))
+    setTimeout(playGameSeq, 4000+120*(startSeq.length))
 
 })
 /* ... play the start sequence */
@@ -94,23 +108,22 @@ function playStartSeq(i) {
 }
 /* Play game sequence for appropriate round */
 let round = 1; // The round we're on
-function playGame() {
-    //setTimeout(() => {
-    for (let i = 1; i < gameSeq.length && i <= round; i ++) {
-        let colorButton2 = toColor(gameSeq[i-1])
-        console.log(colorButton2)
+async function playGameSeq() {
+    i = 0
+    let colorButton2 = toColor(gameSeq[i])
+    for (let j = 1; j < gameSeq.length && j <= round; j ++) {
+        let colorButton2 = toColor(gameSeq[i])
+        //console.log(colorButton2+', '+gameSeq[i]+)
         setTimeout(() => {
-            //if (colorButton2.classList[0].substring(0,5) != 'light') {
-                colorButton2.classList.replace(colorButton2.classList[0],'light'+colorButton2.classList[0])
-            //}
+            console.log (colorButton2)
+            console.log (colorButton2.classList[0].substring(0,5))
+            colorButton2.classList.replace(colorButton2.classList[0],'light'+colorButton2.classList[0])
             setTimeout(() => {
-                console.log(colorButton2.classList[0])
-                //if (colorButton2.classList.length != 0) {
-                    colorButton2.classList.replace(colorButton2.classList[0],colorButton2.classList[0].substring(5))
-                //}
+                colorButton2.classList.replace(colorButton2.classList[0],colorButton2.classList[0].substring(5))
             }, 399);
-            playSound(gameSeq[i-1])
-        }, 400*(i-1));
+            playSound(gameSeq[i])
+        }, 400*(i));
+        i ++
     }
 }
 
@@ -134,7 +147,7 @@ for (let i = 0; i < colorButtons.length; i ++) {
             colorButtons[i].classList.replace(colorButtons[i].classList[0],colorButtons[i].classList[0].substring(5))
         }})
 }
-/* Play sound when mouseup */
+/* Play sound and make a move in the game (if started) when mouseup */
 for (let i = 0; i < colorButtons.length; i ++) {
     colorButtons[i].addEventListener('mouseup', () => {
         if(colorButtons[i].classList[0].substring(0,5)=='light') {
@@ -148,42 +161,68 @@ for (let i = 0; i < colorButtons.length; i ++) {
 }
 
 /* USER INTERACTION */
-//next button to be pressed
+/* Create a list of next buttons to be pressed */
 let nextCorrectList = [];
-let tempGameSeq = [...gameSeq]
-for (j = 0; j < 4; j ++) {
-    nextCorrectList.unshift('end round')
-    for (i = tempGameSeq.length - 1; i >= 0; i --) {
-        nextCorrectList.unshift(tempGameSeq[i])
+function nextButtons() {
+    let nextList = [];
+    let tempGameSeq = [...gameSeq]
+    for (j = 0; j < 4; j ++) {
+        nextList.unshift('end round')
+        for (i = tempGameSeq.length - 1; i >= 0; i --) {
+            nextList.unshift(tempGameSeq[i])
+        }
+        tempGameSeq.pop()
     }
-    tempGameSeq.pop()
+    nextCorrectList = nextList
 }
-console.log(nextCorrectList)
-console.log(gameSeq.length)
-
+/* Function to track the user's interaction with the game and respond accordingly */
 function play(char) {
-    if (char == nextCorrectList[0]) {//if correct button pressed
-        if (nextCorrectList.length == 1) {//  if the user won
+    if (char == nextCorrectList[0]) { // If correct button pressed
+        if (nextCorrectList.length == 1) { // If the user won
+            console.log('win')
             win()
         }
-        else if (nextCorrectList[1] == 'end round') { //  if we've reached the end of the round
+        else if (nextCorrectList[1] == 'end round') { // If we've reached the end of the round
+            console.log('next round')
             round += 1
             nextCorrectList.shift()
             nextCorrectList.shift()
+            nextRound()
         }
-        else {//  else
+        else { // Otherwise
             nextCorrectList.shift()
+            correct()
         }
     }
-    else {
+    else { // If the user pressed the wrong button
         lose()
     }
 }
-//else(wrong button)
-
+let message = document.querySelector('p[id="status"]')
+let totalRounds = gameSeq.length //MAKE THIS INPUTED ROUNDS
+//console.log(totalRounds-round+'!')
 function win() {
-    console.log('you win!')
+    new Audio('/sounds/win.wav').play()
 }
-function lose() {
-    console.log('you lose')
+async function lose() {
+    let wrong = await new Audio('/sounds/wrong.wav').play()
+    new Audio('/sounds/lose.wav').play()
+}
+function correct() {
+    message.innerHTML = `So far so good! ${totalRounds-round} more to go!`
+}
+function nextRound() {
+    new Audio('/sounds/nextRound.wav').play()
+    message.innerHTML = "Good job! Prepare for next round."
+    setTimeout(() => {
+        message.innerHTML = `Round ${round} of ${totalRounds}`
+    }, 800);
+    setTimeout(() => {
+        //if (round == totalRounds) {
+            //win()
+        //}
+        //else {
+            playGameSeq()
+        //}
+    }, 800);
 }
