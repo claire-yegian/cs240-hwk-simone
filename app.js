@@ -1,39 +1,44 @@
-//const axios = require('axios')
-let startSeq = ['R', 'B', 'Y', 'R', 'G']
-let gameSeq = [ 'R', 'R', 'G', 'Y' ]
+const axios = require('axios')
+// let startSeq = ['R', 'B', 'Y', 'R', 'G']
+// let gameSeq = [ 'R', 'R', 'G', 'Y' ]
+
+let startSeq = []
+let gameSeq = []
 /* Function to get the start sequence */
-// async function getStart() {
-//     try {
-//         let response = await axios.get('http://cs.pugetsound.edu/~dchiu/cs240/api/simone/?cmd=start')
-//         return response.data.sequence
-//     }
-//     catch (err) {
-//         return 'Error!\n\ number: ' +err.errno+'\n\ code: '+err.code
-//     }
-// }
-// getStart()
-//     .then((result) => {
-//         console.log(result)
-//     })
-//     .catch((err) => {
-//         console.log(err)
-//     })
+async function getStart() {
+    try {
+        let response = await axios.get('http://cs.pugetsound.edu/~dchiu/cs240/api/simone/?cmd=start')
+        return response.data.sequence
+    }
+    catch (err) {
+        return 'Error!\n\ number: ' +err.errno+'\n\ code: '+err.code
+    }
+}
+getStart()
+    .then((result) => {
+        startSeq = (result)
+    })
+    .catch((err) => {
+        alert(err)
+    })
 
 /* Get the inputed number of rounds */
-//let roundsToPlay = document.querySelector('input[id="rounds"]')
+let roundsToPlay = document.querySelector('input[id="rounds"]')
 let playButton = document.querySelector('button[id="play"]')
-// playButton.addEventListener('unclick', getSequence(roundsToPlay.innerHTML))
+// playButton.addEventListener('click', () => {
+//     let num = roundsToPlay.value
+//     getSequence(num)})
 
-// /* Function to get the game sequence with the inputed number of rounds*/
-// async function getSequence(numRounds) {
-//     try {
-//         let response = await axios.get(`http://cs.pugetsound.edu/~dchiu/cs240/api/simone/?cmd=getSolution&rounds=${numRounds}`)
-//         console.log(response.data.key)
-//     }
-//     catch (err) {
-//         console.log('Error!\n\ number: ' +err.errno+'\n\ code: '+err.code)
-//     }
-// }
+/* Function to get the game sequence with the inputed number of rounds*/
+async function getSequence(numRounds) {
+    try {
+        let response = await axios.get(`http://cs.pugetsound.edu/~dchiu/cs240/api/simone/?cmd=getSolution&rounds=${numRounds}`)
+        gameSeq = (response.data.key)
+    }
+    catch (err) {
+        alert('Error!\n\ number: ' +err.errno+'\n\ code: '+err.code)
+    }
+}
 
 /* Which color's sound to play? */
 function playSound(color) {
@@ -84,13 +89,14 @@ function toColor(char) {
 
 /* WHEN THE START BUTTON IS PRESSED ... */
 let gameStarted = false
-playButton.addEventListener('click', function (click) {
-    // gameStarted = true
-    // round = 1
-    // message.innerHTML = ''
-    // document.body.style.background = "black"
-    // nextButtons()
-    window.location.reload()
+playButton.addEventListener('click', async function (click) {
+    gameStarted = true
+    round = 1
+    message.innerHTML = ''
+    document.body.style.background = "black"
+    totalRounds = roundsToPlay.value
+    let done = await getSequence(totalRounds)
+    nextButtons()
     for (let i = 0; i < startSeq.length; i ++) {
         playStartSeq(i)
     }
@@ -185,7 +191,6 @@ function nextButtons() {
 let correctThisRound = 0
 function play(char) {
     if (char == nextCorrectList[0]) { // If correct button pressed
-        console.log(nextCorrectList[0])
         if (nextCorrectList.length == 1) { // If the user won
             win()
         }
@@ -205,10 +210,9 @@ function play(char) {
     else { // If the user pressed the wrong button
         lose()
     }
-    console.log(nextCorrectList)
 }
 let message = document.querySelector('p[id="status"]')
-let totalRounds = gameSeq.length //MAKE THIS INPUTED ROUNDS
+let totalRounds = gameSeq.length
 function win() {
     new Audio('/sounds/win.mp3').play()
     message.innerHTML = "Yay you win!"
