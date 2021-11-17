@@ -1,6 +1,6 @@
 //const axios = require('axios')
-let startSeq = ['R', 'B', 'Y', 'R', 'B', 'B', 'Y', 'G', 'B', 'R', 'B', 'G']
-let gameSeq = [ 'R', 'G', 'Y', 'Y' ]
+let startSeq = ['R', 'B', 'Y', 'R', 'G']
+let gameSeq = [ 'R', 'R', 'G', 'Y' ]
 /* Function to get the start sequence */
 // async function getStart() {
 //     try {
@@ -85,10 +85,12 @@ function toColor(char) {
 /* WHEN THE START BUTTON IS PRESSED ... */
 let gameStarted = false
 playButton.addEventListener('click', function (click) {
-    gameStarted = true
-    round = 1
-    message.innerHTML = ''
-    nextButtons()
+    // gameStarted = true
+    // round = 1
+    // message.innerHTML = ''
+    // document.body.style.background = "black"
+    // nextButtons()
+    window.location.reload()
     for (let i = 0; i < startSeq.length; i ++) {
         playStartSeq(i)
     }
@@ -101,29 +103,34 @@ function playStartSeq(i) {
     setTimeout(() => {
         colorButton.classList.replace(colorButton.classList[0],'light'+colorButton.classList[0])
         setTimeout(() => {
-            colorButton.classList.replace(colorButton.classList[0],colorButton.classList[0].substring(5))
+            if (colorButton.classList[0].substring(0,5) == 'light') {
+                colorButton.classList.replace(colorButton.classList[0],colorButton.classList[0].substring(5))
+            }
         }, 119);
         playSound(startSeq[i]);
     }, 120*i)
 }
 /* Play game sequence for appropriate round */
 let round = 1; // The round we're on
-async function playGameSeq() {
+function playGameSeq() {
     i = 0
+    k = 0
     let colorButton2 = toColor(gameSeq[i])
-    for (let j = 1; j < gameSeq.length && j <= round; j ++) {
-        let colorButton2 = toColor(gameSeq[i])
-        //console.log(colorButton2+', '+gameSeq[i]+)
+    for (let j = 1; j <= gameSeq.length && j <= round; j ++) {
         setTimeout(() => {
-            console.log (colorButton2)
-            console.log (colorButton2.classList[0].substring(0,5))
-            colorButton2.classList.replace(colorButton2.classList[0],'light'+colorButton2.classList[0])
+            let colorButton2 = toColor(gameSeq[i])
             setTimeout(() => {
-                colorButton2.classList.replace(colorButton2.classList[0],colorButton2.classList[0].substring(5))
-            }, 399);
-            playSound(gameSeq[i])
-        }, 400*(i));
-        i ++
+                colorButton2.classList.replace(colorButton2.classList[0],'light'+colorButton2.classList[0])
+                setTimeout(() => {
+                    if (colorButton2.classList[0].substring(0,5) == 'light') {
+                        colorButton2.classList.replace(colorButton2.classList[0],colorButton2.classList[0].substring(5))
+                    }
+                }, 350);
+                playSound(nextCorrectList[k])
+                k ++
+            }, 400*i);
+            i ++
+        }, 400);
     }
 }
 
@@ -167,7 +174,6 @@ function nextButtons() {
     let nextList = [];
     let tempGameSeq = [...gameSeq]
     for (j = 0; j < 4; j ++) {
-        nextList.unshift('end round')
         for (i = tempGameSeq.length - 1; i >= 0; i --) {
             nextList.unshift(tempGameSeq[i])
         }
@@ -176,37 +182,45 @@ function nextButtons() {
     nextCorrectList = nextList
 }
 /* Function to track the user's interaction with the game and respond accordingly */
+let correctThisRound = 0
 function play(char) {
     if (char == nextCorrectList[0]) { // If correct button pressed
+        console.log(nextCorrectList[0])
         if (nextCorrectList.length == 1) { // If the user won
-            console.log('win')
             win()
-        }
-        else if (nextCorrectList[1] == 'end round') { // If we've reached the end of the round
-            console.log('next round')
-            round += 1
-            nextCorrectList.shift()
-            nextCorrectList.shift()
-            nextRound()
         }
         else { // Otherwise
             nextCorrectList.shift()
-            correct()
+            correctThisRound ++
+            if (correctThisRound == round) {
+                round += 1
+                correctThisRound = 0
+                nextRound()
+            }
+            else {
+                correct()
+            }
         }
     }
     else { // If the user pressed the wrong button
         lose()
     }
+    console.log(nextCorrectList)
 }
 let message = document.querySelector('p[id="status"]')
 let totalRounds = gameSeq.length //MAKE THIS INPUTED ROUNDS
-//console.log(totalRounds-round+'!')
 function win() {
-    new Audio('/sounds/win.wav').play()
+    new Audio('/sounds/win.mp3').play()
+    message.innerHTML = "Yay you win!"
+    document.body.style.background = "deepskyblue"
+    gameStarted = false
 }
 async function lose() {
     let wrong = await new Audio('/sounds/wrong.wav').play()
     new Audio('/sounds/lose.wav').play()
+    message.innerHTML = "Incorrect! You lose!"
+    document.body.style.background = "hotpink"
+    gameStarted = false
 }
 function correct() {
     message.innerHTML = `So far so good! ${totalRounds-round} more to go!`
@@ -218,11 +232,6 @@ function nextRound() {
         message.innerHTML = `Round ${round} of ${totalRounds}`
     }, 800);
     setTimeout(() => {
-        //if (round == totalRounds) {
-            //win()
-        //}
-        //else {
-            playGameSeq()
-        //}
+        playGameSeq()
     }, 800);
 }
